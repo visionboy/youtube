@@ -5,6 +5,8 @@ from pathlib import Path
 
 class Settings(BaseSettings):
     youtube_api_key: Optional[str] = None
+    tiktok_api_key: Optional[str] = None
+    tiktok_rapidapi_host: str = "tiktok-all-in-one.p.rapidapi.com"
     
     class Config:
         env_file = ".env"
@@ -15,6 +17,12 @@ class Settings(BaseSettings):
         """Get YouTube API key from environment"""
         settings = cls()
         return settings.youtube_api_key
+
+    @classmethod
+    def get_tiktok_api_key(cls) -> Optional[str]:
+        """Get TikTok API key from environment"""
+        settings = cls()
+        return settings.tiktok_api_key
     
     @classmethod
     def save_api_key(cls, api_key: str) -> bool:
