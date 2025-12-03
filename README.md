@@ -31,6 +31,9 @@ A full-stack YouTube video search and analytics platform built with **Nuxt 3** (
 - Status bar footer
 - Smooth animations and transitions
 
+![캡처](./youtube_any.png)
+
+
 ## Tech Stack
 
 **Frontend:**
