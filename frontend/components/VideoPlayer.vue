@@ -21,14 +21,25 @@
           </div>
           
           <!-- Video Player -->
-          <div class="relative" style="padding-bottom: 56.25%;">
+          <div class="relative bg-black" style="padding-bottom: 56.25%;">
             <iframe
+              v-if="platform === 'youtube'"
               :src="`https://www.youtube.com/embed/${videoId}?autoplay=1`"
               class="absolute inset-0 w-full h-full"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
             ></iframe>
+            <div 
+              v-else 
+              class="absolute inset-0 w-full h-full flex items-center justify-center text-white"
+            >
+              <div class="text-center">
+                <p class="text-2xl font-bold mb-4">TikTok Video Player (Mock)</p>
+                <p class="text-gray-400">Video ID: {{ videoId }}</p>
+                <p class="text-sm text-gray-500 mt-2">Real TikTok embedding requires a different implementation.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -40,6 +51,7 @@
 defineProps<{
   videoId: string
   show: boolean
+  platform?: 'youtube' | 'tiktok'
 }>()
 
 defineEmits<{

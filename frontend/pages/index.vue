@@ -1,5 +1,30 @@
 <template>
   <div class="container mx-auto px-4 py-8">
+    <!-- Platform Selector -->
+    <div class="flex justify-center mb-8">
+      <div class="bg-vscode-itemHover p-1 rounded-lg inline-flex">
+        <button 
+          @click="platform = 'youtube'"
+          class="px-6 py-2 rounded-md transition-all duration-200 font-medium flex items-center gap-2"
+          :class="platform === 'youtube' ? 'bg-red-600 text-white shadow-lg' : 'text-vscode-textDim hover:text-vscode-text'"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+          YouTube
+        </button>
+        <button 
+          @click="platform = 'tiktok'"
+          class="px-6 py-2 rounded-md transition-all duration-200 font-medium flex items-center gap-2"
+          :class="platform === 'tiktok' ? 'bg-black text-white shadow-lg' : 'text-vscode-textDim hover:text-vscode-text'"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+          </svg>
+          TikTok
+        </button>
+      </div>
+    </div>
     <!-- Search Bar -->
     <div class="mb-6">
       <SearchBar 
@@ -105,6 +130,7 @@
       <div v-else>
         <VideoTable 
           :videos="sortedVideos"
+          :platform="platform"
           @play="openVideoPlayer"
           @sort="handleSort"
         />
@@ -127,16 +153,19 @@
     <VideoPlayer
       :video-id="selectedVideoId"
       :show="showPlayer"
+      :platform="platform"
       @close="closeVideoPlayer"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
-const { searchVideos, loading, error } = useYouTubeApi()
+const { searchVideos: searchYouTube, loading: loadingYouTube, error: errorYouTube } = useYouTubeApi()
+const { searchVideos: searchTikTok, loading: loadingTikTok, error: errorTikTok } = useTikTokApi()
 
+const platform = ref<'youtube' | 'tiktok'>('youtube')
 const searchQuery = ref('')
 const filters = ref({
   order: 'relevance',
@@ -156,6 +185,19 @@ const sortDirection = ref<'asc' | 'desc'>('desc')
 const selectedVideoId = ref('')
 const showPlayer = ref(false)
 
+const loading = computed(() => platform.value === 'youtube' ? loadingYouTube.value : loadingTikTok.value)
+const error = computed(() => platform.value === 'youtube' ? errorYouTube.value : errorTikTok.value)
+
+// Reset videos when platform changes
+watch(platform, () => {
+  videos.value = []
+  nextPageToken.value = null
+  totalResults.value = 0
+  if (searchQuery.value) {
+    handleSearch()
+  }
+})
+
 const handleSearch = async () => {
   if (!searchQuery.value.trim()) return
   
@@ -164,10 +206,16 @@ const handleSearch = async () => {
   nextPageToken.value = null
   
   try {
-    const result = await searchVideos(searchQuery.value, filters.value)
+    let result
+    if (platform.value === 'youtube') {
+      result = await searchYouTube(searchQuery.value, filters.value)
+    } else {
+      result = await searchTikTok(searchQuery.value, filters.value)
+    }
+    
     videos.value = result.videos
     nextPageToken.value = result.nextPageToken
-    totalResults.value = result.total // Note: API might return total for page, not global
+    totalResults.value = result.total
   } catch (err) {
     console.error('Search failed:', err)
   }
@@ -177,10 +225,18 @@ const loadMore = async () => {
   if (!nextPageToken.value) return
   
   try {
-    const result = await searchVideos(searchQuery.value, {
+    let result
+    const searchParams = {
       ...filters.value,
       pageToken: nextPageToken.value
-    })
+    }
+    
+    if (platform.value === 'youtube') {
+      result = await searchYouTube(searchQuery.value, searchParams)
+    } else {
+      result = await searchTikTok(searchQuery.value, searchParams)
+    }
+    
     videos.value = [...videos.value, ...result.videos]
     nextPageToken.value = result.nextPageToken
   } catch (err) {

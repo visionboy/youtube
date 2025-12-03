@@ -95,6 +95,7 @@ import * as XLSX from 'xlsx'
 
 const props = defineProps<{
   videos: any[]
+  platform?: 'youtube' | 'tiktok'
 }>()
 
 defineEmits<{
@@ -130,7 +131,9 @@ const exportToExcel = () => {
     Subscribers: v.statistics.subscriberCount || 0,
     'Ratio (%)': v.statistics.viewSubscriberRatio || 0,
     Tags: (v.tags || []).join(', '),
-    URL: `https://www.youtube.com/watch?v=${v.id}`
+    URL: props.platform === 'tiktok' 
+      ? `https://www.tiktok.com/@${v.channelTitle}/video/${v.id}`
+      : `https://www.youtube.com/watch?v=${v.id}`
   }))
 
   const ws = XLSX.utils.json_to_sheet(data)

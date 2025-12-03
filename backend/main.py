@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import youtube, settings
+from routes import youtube, settings, tiktok
 
 app = FastAPI(
     title="YouTube Analytics API",
@@ -19,6 +19,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(youtube.router)
+app.include_router(tiktok.router)
 app.include_router(settings.router)
 
 @app.get("/")
