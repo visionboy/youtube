@@ -18,7 +18,13 @@ class YouTubeService:
         self,
         query: str,
         max_results: int = 25,
-        order: str = "relevance"
+        order: str = "relevance",
+        published_after: Optional[str] = None,
+        video_duration: Optional[str] = None,
+        min_ratio: Optional[float] = None,
+        min_comments: Optional[int] = None,
+        tag: Optional[str] = None,
+        page_token: Optional[str] = None
     ) -> Dict:
         """
         Search for videos using YouTube Data API
@@ -34,14 +40,44 @@ class YouTubeService:
         try:
             youtube = self._get_youtube_client()
             
+            # Calculate publishedAfter date
+            published_after_rfc = None
+            if published_after:
+                from datetime import datetime, timedelta
+                now = datetime.utcnow()
+                if published_after == "1m":
+                    date = now - timedelta(days=30)
+                elif published_after == "2m":
+                    date = now - timedelta(days=60)
+                elif published_after == "6m":
+                    date = now - timedelta(days=180)
+                elif published_after == "1y":
+                    date = now - timedelta(days=365)
+                
+                if published_after != "all" and published_after in ["1m", "2m", "6m", "1y"]:
+                    published_after_rfc = date.isoformat("T") + "Z"
+
             # Search for videos
-            search_response = youtube.search().list(
-                q=query,
-                part='id,snippet',
-                maxResults=max_results,
-                order=order,
-                type='video'
-            ).execute()
+            search_params = {
+                'q': query,
+                'part': 'id,snippet',
+                'maxResults': max_results,
+                'order': order,
+                'type': 'video'
+            }
+            
+            if published_after_rfc:
+                search_params['publishedAfter'] = published_after_rfc
+                
+            if video_duration and video_duration != "any":
+                search_params['videoDuration'] = video_duration
+                
+            if page_token:
+                search_params['pageToken'] = page_token
+                
+            search_response = youtube.search().list(**search_params).execute()
+            
+            next_page_token = search_response.get('nextPageToken')
             
             # Get video IDs
             video_ids = [item['id']['videoId'] for item in search_response.get('items', [])]
@@ -49,15 +85,54 @@ class YouTubeService:
             if not video_ids:
                 return {"videos": [], "total": 0}
             
-            # Get video statistics
+            # Get video statistics and content details
             videos_response = youtube.videos().list(
                 part='statistics,snippet,contentDetails',
                 id=','.join(video_ids)
             ).execute()
             
-            # Format response
+            # Get channel IDs to fetch subscriber counts
+            channel_ids = list(set(item['snippet']['channelId'] for item in videos_response.get('items', [])))
+            
+            # Fetch channel details
+            channels_data = {}
+            if channel_ids:
+                channels_response = youtube.channels().list(
+                    part='statistics',
+                    id=','.join(channel_ids)
+                ).execute()
+                
+                for item in channels_response.get('items', []):
+                    channels_data[item['id']] = int(item['statistics'].get('subscriberCount', 0))
+            
+            # Format response and filter by ratio
             videos = []
             for item in videos_response.get('items', []):
+                view_count = int(item['statistics'].get('viewCount', 0))
+                channel_id = item['snippet']['channelId']
+                subscriber_count = channels_data.get(channel_id, 0)
+                
+                # Calculate ratio
+                ratio = 0
+                if subscriber_count > 0:
+                    ratio = (view_count / subscriber_count) * 100
+                
+                # Filter by min_ratio if specified
+                if min_ratio is not None and ratio < min_ratio:
+                    continue
+
+                # Filter by min_comments if specified
+                comment_count = int(item['statistics'].get('commentCount', 0))
+                if min_comments is not None and comment_count < min_comments:
+                    continue
+                
+                # Filter by tag if specified
+                video_tags = item['snippet'].get('tags', [])
+                if tag:
+                    tag_lower = tag.lower()
+                    if not any(t.lower() == tag_lower for t in video_tags):
+                        continue
+                    
                 video_data = {
                     'id': item['id'],
                     'title': item['snippet']['title'],
@@ -65,10 +140,13 @@ class YouTubeService:
                     'channelTitle': item['snippet']['channelTitle'],
                     'publishedAt': item['snippet']['publishedAt'],
                     'thumbnails': item['snippet']['thumbnails'],
+                    'tags': video_tags,
                     'statistics': {
-                        'viewCount': int(item['statistics'].get('viewCount', 0)),
+                        'viewCount': view_count,
                         'likeCount': int(item['statistics'].get('likeCount', 0)),
-                        'commentCount': int(item['statistics'].get('commentCount', 0))
+                        'commentCount': comment_count,
+                        'subscriberCount': subscriber_count,
+                        'viewSubscriberRatio': round(ratio, 2)
                     }
                 }
                 videos.append(video_data)
@@ -77,7 +155,8 @@ class YouTubeService:
                 "videos": videos,
                 "total": len(videos),
                 "query": query,
-                "order": order
+                "order": order,
+                "nextPageToken": next_page_token
             }
             
         except HttpError as e:

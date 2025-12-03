@@ -16,7 +16,13 @@ export const useYouTubeApi = () => {
             const params = {
                 q: query,
                 maxResults: filters.maxResults || 25,
-                order: filters.order || 'relevance'
+                order: filters.order || 'relevance',
+                publishedAfter: filters.publishedAfter,
+                videoDuration: filters.videoDuration,
+                minRatio: filters.minRatio,
+                minComments: filters.minComments,
+                tag: filters.tag,
+                pageToken: filters.pageToken
             }
 
             const response = await axios.get(`${apiBase}/api/videos/search`, { params })

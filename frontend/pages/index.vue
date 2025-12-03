@@ -21,7 +21,7 @@
     </div>
     
     <!-- Loading State -->
-    <div v-if="loading" class="flex items-center justify-center py-20">
+    <div v-if="loading && !videos.length" class="flex items-center justify-center py-20">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-vscode-accent border-t-transparent"></div>
         <p class="mt-4 text-vscode-textDim">Loading videos...</p>
@@ -58,20 +58,70 @@
       <p class="text-vscode-textDim mb-4">Start by searching for videos above</p>
     </div>
     
-    <!-- Video Grid -->
+    <!-- Results Container -->
     <div v-else>
-      <div class="mb-4 text-sm text-vscode-textDim">
-        Found {{ videos.length }} videos
+      <!-- View Toggle & Results Count -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-sm text-vscode-textDim">
+          Found {{ totalResults }} videos
+        </div>
+        <div class="flex bg-vscode-itemHover rounded p-1">
+          <button 
+            @click="viewMode = 'grid'"
+            class="p-2 rounded transition-colors"
+            :class="{ 'bg-vscode-accent text-white': viewMode === 'grid', 'text-vscode-textDim hover:text-vscode-text': viewMode !== 'grid' }"
+            title="Grid View"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+            </svg>
+          </button>
+          <button 
+            @click="viewMode = 'table'"
+            class="p-2 rounded transition-colors"
+            :class="{ 'bg-vscode-accent text-white': viewMode === 'table', 'text-vscode-textDim hover:text-vscode-text': viewMode !== 'table' }"
+            title="Table View"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <VideoCard
-          v-for="video in sortedVideos"
-          :key="video.id"
-          :video="video"
-          @click="openVideoPlayer"
+
+      <!-- Video Grid -->
+      <div v-if="viewMode === 'grid'">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <VideoCard
+            v-for="video in sortedVideos"
+            :key="video.id"
+            :video="video"
+            @click="openVideoPlayer"
+          />
+        </div>
+      </div>
+
+      <!-- Video Table -->
+      <div v-else>
+        <VideoTable 
+          :videos="sortedVideos"
+          @play="openVideoPlayer"
+          @sort="handleSort"
         />
       </div>
-    </div>
+
+      <!-- Load More -->
+      <div v-if="nextPageToken" class="flex justify-center mt-8 pb-8">
+        <button 
+          @click="loadMore"
+          :disabled="loading"
+          class="px-6 py-2 bg-vscode-button hover:bg-vscode-buttonHover text-white rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
+        >
+          <span v-if="loading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          {{ loading ? 'Loading...' : 'Load More' }}
+        </button>
+      </div>
+    </div> <!-- End Results Container -->
     
     <!-- Video Player Modal -->
     <VideoPlayer
@@ -90,9 +140,17 @@ const { searchVideos, loading, error } = useYouTubeApi()
 const searchQuery = ref('')
 const filters = ref({
   order: 'relevance',
-  maxResults: 25
+  maxResults: 10,
+  publishedAfter: '1m',
+  videoDuration: 'short',
+  minRatio: null as number | null,
+  minComments: null as number | null,
+  tag: ''
 })
 const videos = ref<any[]>([])
+const nextPageToken = ref<string | null>(null)
+const totalResults = ref(0)
+const viewMode = ref<'grid' | 'table'>('grid')
 const sortBy = ref('')
 const sortDirection = ref<'asc' | 'desc'>('desc')
 const selectedVideoId = ref('')
@@ -101,11 +159,32 @@ const showPlayer = ref(false)
 const handleSearch = async () => {
   if (!searchQuery.value.trim()) return
   
+  // Reset state for new search
+  videos.value = []
+  nextPageToken.value = null
+  
   try {
     const result = await searchVideos(searchQuery.value, filters.value)
     videos.value = result.videos
+    nextPageToken.value = result.nextPageToken
+    totalResults.value = result.total // Note: API might return total for page, not global
   } catch (err) {
     console.error('Search failed:', err)
+  }
+}
+
+const loadMore = async () => {
+  if (!nextPageToken.value) return
+  
+  try {
+    const result = await searchVideos(searchQuery.value, {
+      ...filters.value,
+      pageToken: nextPageToken.value
+    })
+    videos.value = [...videos.value, ...result.videos]
+    nextPageToken.value = result.nextPageToken
+  } catch (err) {
+    console.error('Load more failed:', err)
   }
 }
 

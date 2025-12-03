@@ -8,7 +8,13 @@ router = APIRouter(prefix="/api/videos", tags=["videos"])
 async def search_videos(
     q: str = Query(..., description="Search query"),
     maxResults: int = Query(25, ge=1, le=50, description="Maximum results"),
-    order: str = Query("relevance", description="Sort order: date, rating, relevance, viewCount")
+    order: str = Query("relevance", description="Sort order: date, rating, relevance, viewCount"),
+    publishedAfter: Optional[str] = Query(None, description="Filter by date: 1m, 2m, 6m, 1y, all"),
+    videoDuration: Optional[str] = Query(None, description="Filter by duration: short, long, any"),
+    minRatio: Optional[float] = Query(None, description="Minimum views/subscriber ratio"),
+    minComments: Optional[int] = Query(None, description="Minimum comment count"),
+    tag: Optional[str] = Query(None, description="Filter by tag"),
+    pageToken: Optional[str] = Query(None, description="Page token for pagination")
 ):
     """
     Search for YouTube videos with filters
@@ -17,7 +23,13 @@ async def search_videos(
         result = youtube_service.search_videos(
             query=q,
             max_results=maxResults,
-            order=order
+            order=order,
+            published_after=publishedAfter,
+            video_duration=videoDuration,
+            min_ratio=minRatio,
+            min_comments=minComments,
+            tag=tag,
+            page_token=pageToken
         )
         return result
     except ValueError as e:

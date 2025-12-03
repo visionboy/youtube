@@ -18,6 +18,7 @@ interface _GlobalComponents {
   'SearchBar': typeof import("../../components/SearchBar.vue")['default']
   'VideoCard': typeof import("../../components/VideoCard.vue")['default']
   'VideoPlayer': typeof import("../../components/VideoPlayer.vue")['default']
+  'VideoTable': typeof import("../../components/VideoTable.vue")['default']
   'NuxtWelcome': typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']
   'NuxtLayout': typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
   'NuxtErrorBoundary': typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -45,6 +46,7 @@ interface _GlobalComponents {
   'LazySearchBar': LazyComponent<typeof import("../../components/SearchBar.vue")['default']>
   'LazyVideoCard': LazyComponent<typeof import("../../components/VideoCard.vue")['default']>
   'LazyVideoPlayer': LazyComponent<typeof import("../../components/VideoPlayer.vue")['default']>
+  'LazyVideoTable': LazyComponent<typeof import("../../components/VideoTable.vue")['default']>
   'LazyNuxtWelcome': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
   'LazyNuxtLayout': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
   'LazyNuxtErrorBoundary': LazyComponent<typeof import("../../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>

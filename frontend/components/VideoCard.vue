@@ -21,7 +21,31 @@
         {{ video.title }}
       </h3>
       
-      <p class="text-sm text-vscode-textDim mb-3">
+      <div class="mb-3">
+        <p class="text-vscode-textDim text-sm transition-all duration-300" :class="{ 'line-clamp-2': !expanded, 'line-clamp-none': expanded }">
+          {{ video.description }}
+        </p>
+        <button 
+          v-if="video.description && video.description.length > 100"
+          @click.stop="expanded = !expanded" 
+          class="text-xs text-vscode-accent hover:underline mt-1"
+        >
+          {{ expanded ? 'Show less' : 'Show more' }}
+        </button>
+      </div>
+
+      <!-- Tags -->
+      <div v-if="video.tags && video.tags.length" class="flex flex-wrap gap-1 mb-3">
+        <span 
+          v-for="tag in video.tags.slice(0, 3)" 
+          :key="tag"
+          class="px-2 py-0.5 bg-vscode-badge text-vscode-text text-xs rounded-full"
+        >
+          #{{ tag }}
+        </span>
+      </div>
+      
+      <p class="text-sm text-vscode-textDim mb-3 font-medium">
         {{ video.channelTitle }}
       </p>
       
@@ -42,18 +66,31 @@
           <span>{{ formatNumber(video.statistics.likeCount) }}</span>
         </div>
         
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1" title="Comments">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/>
           </svg>
           <span>{{ formatNumber(video.statistics.commentCount) }}</span>
         </div>
       </div>
+      
+      <!-- Advanced Stats -->
+      <div v-if="video.statistics.subscriberCount" class="mt-2 pt-2 border-t border-vscode-border flex items-center justify-between text-xs text-vscode-textDim">
+        <div title="Subscribers">
+          <span class="font-medium text-vscode-text">{{ formatNumber(video.statistics.subscriberCount) }}</span> subs
+        </div>
+        <div title="Views/Subscriber Ratio" :class="getRatioColor(video.statistics.viewSubscriberRatio)">
+          <span class="font-medium">{{ video.statistics.viewSubscriberRatio }}%</span> ratio
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+
 defineProps<{
   video: any
 }>()
@@ -61,6 +98,8 @@ defineProps<{
 defineEmits<{
   click: [video: any]
 }>()
+
+const expanded = ref(false)
 
 const formatNumber = (num: number) => {
   if (num >= 1000000) {
@@ -83,5 +122,13 @@ const formatDate = (dateString: string) => {
   if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`
   if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`
   return `${Math.floor(diffDays / 365)}y ago`
+}
+
+const getRatioColor = (ratio: number) => {
+  if (ratio >= 500) return 'text-purple-400'
+  if (ratio >= 100) return 'text-red-400'
+  if (ratio >= 50) return 'text-orange-400'
+  if (ratio >= 10) return 'text-green-400'
+  return 'text-vscode-textDim'
 }
 </script>

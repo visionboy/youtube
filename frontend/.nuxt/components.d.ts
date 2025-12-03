@@ -18,6 +18,7 @@ export const FilterControls: typeof import("../components/FilterControls.vue")['
 export const SearchBar: typeof import("../components/SearchBar.vue")['default']
 export const VideoCard: typeof import("../components/VideoCard.vue")['default']
 export const VideoPlayer: typeof import("../components/VideoPlayer.vue")['default']
+export const VideoTable: typeof import("../components/VideoTable.vue")['default']
 export const NuxtWelcome: typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']
 export const NuxtLayout: typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']
 export const NuxtErrorBoundary: typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']
@@ -45,6 +46,7 @@ export const LazyFilterControls: LazyComponent<typeof import("../components/Filt
 export const LazySearchBar: LazyComponent<typeof import("../components/SearchBar.vue")['default']>
 export const LazyVideoCard: LazyComponent<typeof import("../components/VideoCard.vue")['default']>
 export const LazyVideoPlayer: LazyComponent<typeof import("../components/VideoPlayer.vue")['default']>
+export const LazyVideoTable: LazyComponent<typeof import("../components/VideoTable.vue")['default']>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/welcome.vue")['default']>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-layout")['default']>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue")['default']>
