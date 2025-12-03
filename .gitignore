@@ -51,3 +51,6 @@ logs/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Backend
+backend/.env
