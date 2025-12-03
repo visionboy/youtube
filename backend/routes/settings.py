@@ -40,3 +40,37 @@ async def delete_api_key():
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/tiktok-api-key")
+async def get_tiktok_api_key_status():
+    """
+    Check if TikTok API key is configured
+    """
+    try:
+        return settings_service.get_tiktok_api_key_status()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/tiktok-api-key")
+async def save_tiktok_api_key(request: ApiKeyRequest):
+    """
+    Save or update TikTok RapidAPI key
+    """
+    try:
+        result = settings_service.save_tiktok_api_key(request.apiKey)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/tiktok-api-key")
+async def delete_tiktok_api_key():
+    """
+    Delete TikTok API key
+    """
+    try:
+        result = settings_service.delete_tiktok_api_key()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

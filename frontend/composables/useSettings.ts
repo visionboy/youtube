@@ -53,11 +53,59 @@ export const useSettings = () => {
         }
     }
 
+    const getTikTokApiKeyStatus = async () => {
+        loading.value = true
+        error.value = null
+
+        try {
+            const response = await axios.get(`${apiBase}/api/settings/tiktok-api-key`)
+            return response.data
+        } catch (err: any) {
+            error.value = err.response?.data?.detail || 'Failed to get TikTok API key status'
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const saveTikTokApiKey = async (apiKey: string) => {
+        loading.value = true
+        error.value = null
+
+        try {
+            const response = await axios.post(`${apiBase}/api/settings/tiktok-api-key`, { apiKey })
+            return response.data
+        } catch (err: any) {
+            error.value = err.response?.data?.detail || 'Failed to save TikTok API key'
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const deleteTikTokApiKey = async () => {
+        loading.value = true
+        error.value = null
+
+        try {
+            const response = await axios.delete(`${apiBase}/api/settings/tiktok-api-key`)
+            return response.data
+        } catch (err: any) {
+            error.value = err.response?.data?.detail || 'Failed to delete TikTok API key'
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
     return {
         loading,
         error,
         getApiKeyStatus,
         saveApiKey,
-        deleteApiKey
+        deleteApiKey,
+        getTikTokApiKeyStatus,
+        saveTikTokApiKey,
+        deleteTikTokApiKey
     }
 }

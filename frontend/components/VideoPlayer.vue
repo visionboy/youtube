@@ -30,16 +30,14 @@
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
             ></iframe>
-            <div 
-              v-else 
-              class="absolute inset-0 w-full h-full flex items-center justify-center text-white"
-            >
-              <div class="text-center">
-                <p class="text-2xl font-bold mb-4">TikTok Video Player (Mock)</p>
-                <p class="text-gray-400">Video ID: {{ videoId }}</p>
-                <p class="text-sm text-gray-500 mt-2">Real TikTok embedding requires a different implementation.</p>
-              </div>
-            </div>
+            <iframe
+              v-else
+              :src="`https://www.tiktok.com/embed/v2/${videoId}`"
+              class="absolute inset-0 w-full h-full"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
           </div>
         </div>
       </div>
