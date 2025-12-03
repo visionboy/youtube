@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-vscode-border;
+  }
+  
+  body {
+    @apply bg-vscode-bg text-vscode-text font-sans antialiased;
+  }
+  
+  /* Scrollbar styling - VS Code style */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1e1e1e;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #424242;
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4e4e4e;
+  }
+}
+
+@layer components {
+  /* VS Code style button */
+  .btn {
+    @apply px-4 py-2 rounded font-medium transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-vscode-accent focus:ring-offset-2 focus:ring-offset-vscode-bg;
+  }
+  
+  .btn-primary {
+    @apply bg-vscode-accent text-white hover:bg-vscode-accentHover;
+  }
+  
+  .btn-secondary {
+    @apply bg-vscode-sidebar text-vscode-text hover:bg-vscode-hover border border-vscode-border;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700;
+  }
+  
+  /* VS Code style input */
+  .input {
+    @apply w-full px-3 py-2 bg-vscode-sidebar border border-vscode-border rounded;
+    @apply text-vscode-text placeholder-vscode-textDim;
+    @apply focus:outline-none focus:border-vscode-accent focus:ring-1 focus:ring-vscode-accent;
+    @apply transition-colors duration-200;
+  }
+  
+  /* VS Code style card */
+  .card {
+    @apply bg-vscode-sidebar border border-vscode-border rounded-lg;
+    @apply transition-all duration-200;
+  }
+  
+  .card-hover {
+    @apply hover:border-vscode-accent hover:shadow-lg hover:shadow-vscode-accent/10;
+  }
+  
+  /* VS Code style select */
+  .select {
+    @apply input cursor-pointer;
+  }
+  
+  /* Activity bar item (like VS Code sidebar icons) */
+  .activity-item {
+    @apply flex items-center gap-3 px-4 py-2.5 text-vscode-text;
+    @apply hover:bg-vscode-hover cursor-pointer transition-colors duration-150;
+    @apply border-l-2 border-transparent;
+  }
+  
+  .activity-item.active {
+    @apply border-l-vscode-accent bg-vscode-hover text-vscode-textBright;
+  }
+  
+  /* Status bar (like VS Code bottom bar) */
+  .status-bar {
+    @apply bg-vscode-accent text-white px-4 py-1 text-sm;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+  
+  .glass {
+    background: rgba(37, 37, 38, 0.8);
+    backdrop-filter: blur(10px);
+  }
+}
