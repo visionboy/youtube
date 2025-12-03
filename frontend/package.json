@@ -1,6 +1,7 @@
 {
     "name": "youtube-analytics-frontend",
     "version": "1.0.0",
+    "type": "module",
     "private": true,
     "scripts": {
         "dev": "nuxt dev",

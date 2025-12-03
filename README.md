@@ -99,12 +99,37 @@ API docs available at: `http://localhost:8000/docs`
 
 ### Start Frontend Server
 
+**Option 1: Using the startup script (Recommended for macOS with NVM)**
+```bash
+cd frontend
+./start-dev.sh
+```
+
+**Option 2: Using npm directly**
 ```bash
 cd frontend
 npm run dev
 ```
 
 Frontend will run at: `http://localhost:3000`
+
+### Troubleshooting
+
+**If you get "npm: command not found" error:**
+
+This happens when NVM (Node Version Manager) is not properly loaded in your shell. Fix it by adding these lines to your `~/.zshrc` file:
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+```
+
+Then restart your terminal or run:
+```bash
+source ~/.zshrc
+```
+
+Alternatively, use the provided `start-dev.sh` script which handles this automatically.
 
 ## Usage
 
