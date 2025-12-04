@@ -1,269 +1,269 @@
-# Social Video Analytics Application
+# 소셜 비디오 분석 애플리케이션 (Social Video Analytics Application)
 
-A full-stack video search and analytics platform built with **Nuxt 3** (frontend) and **FastAPI** (backend), featuring a **Visual Studio Code-inspired design**. Supports both **YouTube** and **TikTok** video search and analytics.
+**Nuxt 3** (프론트엔드)와 **FastAPI** (백엔드)로 구축된 풀스택 비디오 검색 및 분석 플랫폼으로, **Visual Studio Code에서 영감을 받은 디자인**이 특징입니다. **YouTube**와 **TikTok** 비디오 검색 및 분석을 모두 지원합니다.
 
-## Features
+## 주요 기능
 
-### 🎥 Video Search & Discovery
-- **YouTube**: Real-time video search using YouTube Data API v3
-- **TikTok**: Video search using RapidAPI TikTok Scraper
-- Platform switcher (YouTube/TikTok)
-- Advanced filtering (relevance, date, view count, rating)
-- Client-side sorting by views, likes, and date
-- Adjustable result limits (10, 25, 50)
-- Pagination with "Load More" functionality
+### 🎥 비디오 검색 및 탐색
+- **YouTube**: YouTube Data API v3를 사용한 실시간 비디오 검색
+- **TikTok**: RapidAPI TikTok Scraper를 사용한 비디오 검색
+- 플랫폼 전환 기능 (YouTube/TikTok)
+- 고급 필터링 (관련성, 날짜, 조회수, 평점)
+- 클라이언트 측 정렬 (조회수, 좋아요, 날짜)
+- 결과 수 조절 (10, 25, 50)
+- "더 보기" 기능을 통한 페이지네이션
 
-### 📊 Video Analytics
-- View count, like count, and comment count display
-- View/Subscriber ratio calculation
-- Publication date tracking
-- Channel information and subscriber counts
+### 📊 비디오 분석
+- 조회수, 좋아요 수, 댓글 수 표시
+- 조회수/구독자 비율 계산
+- 게시일 추적
+- 채널 정보 및 구독자 수
 
-### 🎬 Video Playback
-- In-app video player modal
-- YouTube iframe integration
-- TikTok video support
-- Click-to-play functionality
+### 🎬 비디오 재생
+- 인앱 비디오 플레이어 모달
+- YouTube iframe 통합
+- TikTok 비디오 지원
+- 클릭하여 재생 기능
 
-### ⚙️ Settings Management
-- YouTube API key configuration
-- TikTok RapidAPI key configuration
-- Secure key storage in .env file
-- API key status monitoring with masked display
+### ⚙️ 설정 관리
+- YouTube API 키 설정
+- TikTok RapidAPI 키 설정
+- .env 파일에 안전한 키 저장
+- 마스킹된 표시로 API 키 상태 모니터링
 
-### 🎨 VS Code Design Theme
-- Dark theme with VS Code color palette
-- Activity bar-style navigation
-- Status bar footer
-- Smooth animations and transitions
+### 🎨 VS Code 디자인 테마
+- VS Code 색상 팔레트를 사용한 다크 테마
+- 액티비티 바 스타일의 내비게이션
+- 상태 표시줄 푸터
+- 부드러운 애니메이션 및 전환 효과
 
 ![캡처](./youtube_any.png)
 
 
-## Tech Stack
+## 기술 스택
 
-**Frontend:**
+**프론트엔드:**
 - Nuxt 3
 - Vue 3 Composition API
 - Tailwind CSS
 - Axios
 
-**Backend:**
+**백엔드:**
 - FastAPI
 - Python 3.8+
 - YouTube Data API v3
 - Pydantic
 
-## Prerequisites
+## 사전 요구 사항
 
-- Node.js 18+ and npm
+- Node.js 18+ 및 npm
 - Python 3.8+
-- **YouTube Data API v3 key** ([Get one here](https://console.cloud.google.com/))
-- **RapidAPI account** (for TikTok support) ([Sign up here](https://rapidapi.com/))
-- **TikTok Scraper API subscription** ([Subscribe here](https://rapidapi.com/DataFanatic/api/tiktok-scraper7))
+- **YouTube Data API v3 키** ([여기서 발급](https://console.cloud.google.com/))
+- **RapidAPI 계정** (TikTok 지원용) ([여기서 가입](https://rapidapi.com/))
+- **TikTok Scraper API 구독** ([여기서 구독](https://rapidapi.com/DataFanatic/api/tiktok-scraper7))
 
-## Installation
+## 설치
 
-### Backend Setup
+### 백엔드 설정
 
 ```bash
-# Navigate to backend directory
+# 백엔드 디렉토리로 이동
 cd backend
 
-# Create virtual environment (recommended)
+# 가상 환경 생성 (권장)
 python -m venv venv
 venv\Scripts\activate  # Windows
 # source venv/bin/activate  # macOS/Linux
 
-# Install dependencies
+# 의존성 설치
 pip install -r requirements.txt
 
-# Create .env file
+# .env 파일 생성
 copy .env.example .env
-# Edit .env and add your YouTube API key (optional - can be set via UI)
+# .env 파일을 편집하여 YouTube API 키를 추가하세요 (선택 사항 - UI에서도 설정 가능)
 ```
 
-### Frontend Setup
+### 프론트엔드 설정
 
 ```bash
-# Navigate to frontend directory
+# 프론트엔드 디렉토리로 이동
 cd frontend
 
-# Install dependencies
+# 의존성 설치
 npm install
 ```
 
-## Running the Application
+## 애플리케이션 실행
 
-### Start Backend Server
+### 백엔드 서버 시작
 
 ```bash
 cd backend
 uvicorn main:app --reload
 ```
 
-Backend will run at: `http://localhost:8000`
-API docs available at: `http://localhost:8000/docs`
+백엔드 주소: `http://localhost:8000`
+API 문서 주소: `http://localhost:8000/docs`
 
-### Start Frontend Server
+### 프론트엔드 서버 시작
 
-**Option 1: Using the startup script (Recommended for macOS with NVM)**
+**옵션 1: 시작 스크립트 사용 (macOS에서 NVM 사용 시 권장)**
 ```bash
 cd frontend
 ./start-dev.sh
 ```
 
-**Option 2: Using npm directly**
+**옵션 2: npm 직접 사용**
 ```bash
 cd frontend
 npm run dev
 ```
 
-Frontend will run at: `http://localhost:3000`
+프론트엔드 주소: `http://localhost:3000`
 
-### Troubleshooting
+### 문제 해결
 
-**If you get "npm: command not found" error:**
+**"npm: command not found" 오류가 발생하는 경우:**
 
-This happens when NVM (Node Version Manager) is not properly loaded in your shell. Fix it by adding these lines to your `~/.zshrc` file:
+이 오류는 NVM(Node Version Manager)이 쉘에 제대로 로드되지 않았을 때 발생합니다. `~/.zshrc` 파일에 다음 줄을 추가하여 해결하세요:
 
 ```bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 ```
 
-Then restart your terminal or run:
+그 후 터미널을 다시 시작하거나 다음을 실행하세요:
 ```bash
 source ~/.zshrc
 ```
 
-Alternatively, use the provided `start-dev.sh` script which handles this automatically.
+또는 이를 자동으로 처리해주는 제공된 `start-dev.sh` 스크립트를 사용하세요.
 
-## Usage
+## 사용 방법
 
-1. **Configure API Keys** (First Time)
-   - Navigate to Settings page
-   - **YouTube**: Enter your YouTube Data API v3 key and click "Save API Key"
-   - **TikTok**: Enter your RapidAPI key and click "Save TikTok API Key"
-   - Both keys are optional - configure only the platforms you want to use
+1. **API 키 설정** (최초 1회)
+   - 설정(Settings) 페이지로 이동
+   - **YouTube**: YouTube Data API v3 키를 입력하고 "Save API Key" 클릭
+   - **TikTok**: RapidAPI 키를 입력하고 "Save TikTok API Key" 클릭
+   - 두 키는 선택 사항입니다 - 사용하려는 플랫폼만 설정하세요
 
-2. **Search Videos**
-   - Go to the Videos page (home)
-   - Select platform (YouTube or TikTok) using the platform switcher
-   - Enter search query
-   - Adjust filters (order by, max results, date range, etc.)
-   - Click "Search"
+2. **비디오 검색**
+   - 비디오(Videos) 페이지(홈)로 이동
+   - 플랫폼 전환기를 사용하여 플랫폼 선택 (YouTube 또는 TikTok)
+   - 검색어 입력
+   - 필터 조정 (정렬 기준, 최대 결과 수, 날짜 범위 등)
+   - "Search" 클릭
 
-3. **Sort Results**
-   - Use sort buttons (Views, Likes, Date)
-   - Toggle sort direction with arrow button
-   - Switch between Grid and Table view
+3. **결과 정렬**
+   - 정렬 버튼 사용 (조회수, 좋아요, 날짜)
+   - 화살표 버튼으로 정렬 방향 전환
+   - 그리드(Grid)와 테이블(Table) 뷰 간 전환
 
-4. **Play Videos**
-   - Click on any video card
-   - Video player modal will open
-   - Close with X button or click outside
+4. **비디오 재생**
+   - 비디오 카드를 클릭
+   - 비디오 플레이어 모달이 열림
+   - X 버튼을 클릭하거나 외부를 클릭하여 닫기
 
-5. **Load More Results**
-   - Scroll to bottom and click "Load More" for pagination
+5. **결과 더 보기**
+   - 하단으로 스크롤하여 "Load More"를 클릭하여 페이지네이션
 
-## API Endpoints
+## API 엔드포인트
 
-### YouTube Videos
-- `GET /api/videos/search` - Search YouTube videos
-  - Query params: `q`, `maxResults`, `order`, `publishedAfter`, `videoDuration`, `minRatio`, `minComments`, `tag`, `pageToken`
-- `GET /api/videos/{video_id}` - Get YouTube video details
+### YouTube 비디오
+- `GET /api/videos/search` - YouTube 비디오 검색
+  - 쿼리 파라미터: `q`, `maxResults`, `order`, `publishedAfter`, `videoDuration`, `minRatio`, `minComments`, `tag`, `pageToken`
+- `GET /api/videos/{video_id}` - YouTube 비디오 상세 정보
 
-### TikTok Videos
-- `GET /api/tiktok/search` - Search TikTok videos
-  - Query params: `q`, `maxResults`, `order`, `publishedAfter`, `videoDuration`, `minRatio`, `minComments`, `tag`, `pageToken`
-- `GET /api/tiktok/{video_id}` - Get TikTok video details
+### TikTok 비디오
+- `GET /api/tiktok/search` - TikTok 비디오 검색
+  - 쿼리 파라미터: `q`, `maxResults`, `order`, `publishedAfter`, `videoDuration`, `minRatio`, `minComments`, `tag`, `pageToken`
+- `GET /api/tiktok/{video_id}` - TikTok 비디오 상세 정보
 
-### Settings
-- `GET /api/settings/api-key` - Check YouTube API key status
-- `POST /api/settings/api-key` - Save YouTube API key
-- `DELETE /api/settings/api-key` - Delete YouTube API key
-- `GET /api/settings/tiktok-api-key` - Check TikTok API key status
-- `POST /api/settings/tiktok-api-key` - Save TikTok API key
-- `DELETE /api/settings/tiktok-api-key` - Delete TikTok API key
+### 설정
+- `GET /api/settings/api-key` - YouTube API 키 상태 확인
+- `POST /api/settings/api-key` - YouTube API 키 저장
+- `DELETE /api/settings/api-key` - YouTube API 키 삭제
+- `GET /api/settings/tiktok-api-key` - TikTok API 키 상태 확인
+- `POST /api/settings/tiktok-api-key` - TikTok API 키 저장
+- `DELETE /api/settings/tiktok-api-key` - TikTok API 키 삭제
 
-## Project Structure
+## 프로젝트 구조
 
 ```
 youtube/
 ├── backend/
-│   ├── main.py              # FastAPI app
-│   ├── config.py            # Configuration
-│   ├── requirements.txt     # Python dependencies
+│   ├── main.py              # FastAPI 앱
+│   ├── config.py            # 설정
+│   ├── requirements.txt     # Python 의존성
 │   ├── routes/
-│   │   ├── youtube.py       # YouTube video endpoints
-│   │   ├── tiktok.py        # TikTok video endpoints
-│   │   └── settings.py      # Settings endpoints
+│   │   ├── youtube.py       # YouTube 비디오 엔드포인트
+│   │   ├── tiktok.py        # TikTok 비디오 엔드포인트
+│   │   └── settings.py      # 설정 엔드포인트
 │   └── services/
-│       ├── youtube_service.py    # YouTube API integration
-│       ├── tiktok_service.py     # TikTok API integration
-│       └── settings_service.py   # Settings management
+│       ├── youtube_service.py    # YouTube API 통합
+│       ├── tiktok_service.py     # TikTok API 통합
+│       └── settings_service.py   # 설정 관리
 └── frontend/
-    ├── nuxt.config.ts       # Nuxt configuration
-    ├── package.json         # Node dependencies
-    ├── tailwind.config.js   # Tailwind config
-    ├── app.vue              # Root component
+    ├── nuxt.config.ts       # Nuxt 설정
+    ├── package.json         # Node 의존성
+    ├── tailwind.config.js   # Tailwind 설정
+    ├── app.vue              # 루트 컴포넌트
     ├── assets/
     │   └── css/
-    │       └── main.css     # Global styles (VS Code theme)
+    │       └── main.css     # 전역 스타일 (VS Code 테마)
     ├── components/
-    │   ├── VideoCard.vue    # Video card component
-    │   ├── VideoPlayer.vue  # Video player modal
-    │   ├── VideoTable.vue   # Table view component
-    │   ├── SearchBar.vue    # Search input
-    │   └── FilterControls.vue  # Filter/sort controls
+    │   ├── VideoCard.vue    # 비디오 카드 컴포넌트
+    │   ├── VideoPlayer.vue  # 비디오 플레이어 모달
+    │   ├── VideoTable.vue   # 테이블 뷰 컴포넌트
+    │   ├── SearchBar.vue    # 검색 입력창
+    │   └── FilterControls.vue  # 필터/정렬 컨트롤
     ├── composables/
-    │   ├── useYouTubeApi.ts    # YouTube API composable
-    │   ├── useTikTokApi.ts     # TikTok API composable
-    │   └── useSettings.ts      # Settings composable
+    │   ├── useYouTubeApi.ts    # YouTube API 컴포저블
+    │   ├── useTikTokApi.ts     # TikTok API 컴포저블
+    │   └── useSettings.ts      # 설정 컴포저블
     ├── layouts/
-    │   └── default.vue      # Default layout
+    │   └── default.vue      # 기본 레이아웃
     └── pages/
-        ├── index.vue        # Videos page
-        └── settings.vue     # Settings page
+        ├── index.vue        # 비디오 페이지
+        └── settings.vue     # 설정 페이지
 ```
 
-## Design System
+## 디자인 시스템
 
-The application uses a **Visual Studio Code-inspired design**:
+이 애플리케이션은 **Visual Studio Code에서 영감을 받은 디자인**을 사용합니다:
 
-- **Colors:**
-  - Background: `#1e1e1e`
-  - Sidebar: `#252526`
-  - Accent: `#007acc` (blue)
-  - Highlight: `#f9826c` (orange)
-  - Text: `#cccccc`
+- **색상:**
+  - 배경: `#1e1e1e`
+  - 사이드바: `#252526`
+  - 강조색: `#007acc` (파랑)
+  - 하이라이트: `#f9826c` (주황)
+  - 텍스트: `#cccccc`
 
-- **Typography:** Inter, Segoe UI
-- **Components:** Cards, buttons, inputs styled like VS Code
-- **Navigation:** Activity bar-style with icons
+- **타이포그래피:** Inter, Segoe UI
+- **컴포넌트:** VS Code 스타일의 카드, 버튼, 입력창
+- **내비게이션:** 아이콘이 있는 액티비티 바 스타일
 
-## API Quotas
+## API 할당량
 
 ### YouTube API
-The free tier has a daily quota of **10,000 units**:
-- Search request: ~100 units
-- Video details: ~1 unit
+무료 티어는 일일 **10,000 유닛**의 할당량을 가집니다:
+- 검색 요청: ~100 유닛
+- 비디오 상세: ~1 유닛
 
-Approximately **100 searches per day** on free tier.
+무료 티어에서 대략 **하루 100회 검색**이 가능합니다.
 
 ### TikTok API (RapidAPI)
-Quota depends on your RapidAPI subscription plan:
-- **Free tier**: Limited requests per month (check TikTok Scraper API pricing)
-- **Pro tier**: Higher limits available
-- Each search request counts toward your monthly quota
+할당량은 RapidAPI 구독 플랜에 따라 다릅니다:
+- **무료 티어**: 월간 요청 제한 있음 (TikTok Scraper API 가격 정책 확인)
+- **프로 티어**: 더 높은 제한 이용 가능
+- 각 검색 요청은 월간 할당량에서 차감됩니다
 
-**Note**: Without a TikTok API key configured, the app will display mock data for TikTok searches.
+**참고**: TikTok API 키가 설정되지 않은 경우, 앱은 TikTok 검색에 대해 모의 데이터를 표시합니다.
 
-## License
+## 라이선스
 
 MIT
 
-## Author
+## 작성자
 
-Built with Nuxt 3 and FastAPI
+Nuxt 3와 FastAPI로 제작됨
