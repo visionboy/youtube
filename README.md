@@ -316,4 +316,4 @@ youtube/
 MIT
 
 ## 작성자
-LEE SUNG(ALBERT)
+SUNG LEE(ALBERT)
