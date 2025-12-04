@@ -3,6 +3,8 @@ from typing import Optional
 import os
 from pathlib import Path
 
+from urllib.parse import quote_plus
+
 class Settings(BaseSettings):
     youtube_api_key: Optional[str] = None
     tiktok_api_key: Optional[str] = None
@@ -10,7 +12,18 @@ class Settings(BaseSettings):
     secret_key: str = "your-secret-key-keep-it-secret"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
-    database_url: Optional[str] = "mysql+pymysql://root:s36497545!@localhost:3306/albert"
+    
+    # Database settings
+    db_user: str
+    db_password: str
+    db_host: str
+    db_port: int = 3306
+    db_name: str
+
+    @property
+    def database_url(self) -> str:
+        encoded_password = quote_plus(self.db_password) if self.db_password else ""
+        return f"mysql+pymysql://{self.db_user}:{encoded_password}@{self.db_host}:{self.db_port}/{self.db_name}"
     
     class Config:
         env_file = ".env"

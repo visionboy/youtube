@@ -14,11 +14,11 @@ export default defineNuxtConfig({
 
     app: {
         head: {
-            title: 'YouTube Analytics',
+            title: 'Social Video Analytics',
             meta: [
                 { charset: 'utf-8' },
                 { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-                { name: 'description', content: 'YouTube video search and analytics platform' }
+                { name: 'description', content: 'Social video search and analytics platform' }
             ],
             link: [
                 { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

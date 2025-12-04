@@ -1,4 +1,4 @@
-# YouTube Analytics Application
+# Social Video Analytics Application
 
 A full-stack video search and analytics platform built with **Nuxt 3** (frontend) and **FastAPI** (backend), featuring a **Visual Studio Code-inspired design**. Supports both **YouTube** and **TikTok** video search and analytics.
 

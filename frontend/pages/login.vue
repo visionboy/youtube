@@ -3,7 +3,7 @@
     <div class="w-full max-w-md p-8 bg-vscode-sidebar rounded-lg border border-vscode-border shadow-xl">
       <div class="text-center mb-8">
         <h1 class="text-2xl font-bold text-vscode-textBright">Welcome Back</h1>
-        <p class="text-sm text-gray-400 mt-2">Sign in to continue to YouTube Analytics</p>
+        <p class="text-sm text-gray-400 mt-2">Sign in to continue to Social Video Analytics</p>
       </div>
 
       <form @submit.prevent="handleLogin" class="space-y-6">

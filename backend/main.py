@@ -8,7 +8,7 @@ from models import Base
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="YouTube Analytics API",
+    title="Social Video Analytics API",
     description="Backend API for YouTube video search and analytics",
     version="1.0.0"
 )
@@ -31,7 +31,7 @@ app.include_router(settings.router)
 @app.get("/")
 async def root():
     return {
-        "message": "YouTube Analytics API",
+        "message": "Social Video Analytics API",
         "version": "1.0.0",
         "docs": "/docs"
     }
