@@ -91,6 +91,7 @@ DB_NAME=DB_NAME
 TIKTOK_API_KEY=TIKTOK_API_KEY
 ```
 # db 생성(MariaDB) 
+```bash
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
@@ -100,6 +101,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `username` (`username`),
   KEY `username_2` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+```
 
 # 최초 사용자 생성
 backend $ ./venv/bin/python create_user.py you_username you_password
