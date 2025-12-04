@@ -7,10 +7,15 @@ class Settings(BaseSettings):
     youtube_api_key: Optional[str] = None
     tiktok_api_key: Optional[str] = None
     tiktok_rapidapi_host: str = "tiktok-scraper7.p.rapidapi.com"
+    secret_key: str = "your-secret-key-keep-it-secret"
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    database_url: Optional[str] = "mysql+pymysql://root:s36497545!@localhost:3306/albert"
     
     class Config:
         env_file = ".env"
         case_sensitive = False
+        extra = "ignore"
 
     @classmethod
     def get_api_key(cls) -> Optional[str]:

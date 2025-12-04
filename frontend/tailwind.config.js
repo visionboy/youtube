@@ -22,6 +22,11 @@ export default {
                     text: '#cccccc',
                     textBright: '#ffffff',
                     textDim: '#858585',
+                    input: '#3c3c3c',
+                    focusBorder: '#007acc',
+                    button: '#0e639c',
+                    buttonHover: '#1177bb',
+                    link: '#3794ff',
                 }
             },
             fontFamily: {
