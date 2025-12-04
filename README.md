@@ -78,10 +78,19 @@ venv\Scripts\activate  # Windows
 # 의존성 설치
 pip install -r requirements.txt
 
-# .env 파일 생성
+# .env 파일 생성 및 내용
 copy .env.example .env
-# .env 파일을 편집하여 YouTube API 키를 추가하세요 (선택 사항 - UI에서도 설정 가능)
+
+# .env 파일을 편집하여 관련정보를 추가하세요
+YOUTUBE_API_KEY=YOUTUBE_API_KEY
+DB_USER=DB_USER
+DB_PASSWORD=DB_PASSWORD
+DB_HOST=DB_HOST
+DB_PORT=DB_PORT
+DB_NAME=DB_NAME
+TIKTOK_API_KEY=TIKTOK_API_KEY
 ```
+
 
 ### 프론트엔드 설정
 
