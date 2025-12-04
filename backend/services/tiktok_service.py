@@ -1,5 +1,6 @@
 from typing import List, Dict, Optional
 import random
+import re
 import requests
 from datetime import datetime, timedelta
 from config import Settings
@@ -77,11 +78,13 @@ class TikTokService:
                 search_data = response.json()
                 # Extract challenge ID from response
                 if 'data' in search_data and isinstance(search_data['data'], dict):
-                    challenges = search_data['data'].get('challenges', [])
+                    # Try both 'challenge_list' and 'challenges' for compatibility
+                    challenges = search_data['data'].get('challenge_list', []) or search_data['data'].get('challenges', [])
                     if challenges:
                         # Use the first matching challenge
                         challenge_id = challenges[0].get('id')
-                        print(f"[TikTok API] Found challenge ID: {challenge_id}")
+                        challenge_name = challenges[0].get('cha_name') or challenges[0].get('name')
+                        print(f"[TikTok API] Found challenge: {challenge_name} (ID: {challenge_id})")
             
             # If no challenge found, try using the query as ID directly (fallback)
             if not challenge_id:
@@ -140,42 +143,44 @@ class TikTokService:
         
         for item in items[:max_results]:
             try:
-                # Extract fields safely with multiple fallback options
-                stats = item.get('statistics', {}) or item.get('stats', {}) or {}
-                author = item.get('author', {}) or item.get('author_meta', {}) or {}
-                video_info = item.get('video', {}) or {}
+                # TikTok Scraper API returns fields at top level, not nested
+                # Try top-level first, then fall back to nested structures
                 
-                # Get counts with multiple field name options
+                # Get counts - check top level first (TikTok Scraper format)
                 view_count = (
-                    stats.get('playCount') or 
-                    stats.get('play_count') or 
-                    stats.get('play') or 
+                    item.get('play_count') or 
                     item.get('playCount') or 
+                    item.get('statistics', {}).get('playCount') or 
+                    item.get('statistics', {}).get('play_count') or 
                     0
                 )
                 like_count = (
-                    stats.get('diggCount') or 
-                    stats.get('digg_count') or 
-                    stats.get('likes') or 
+                    item.get('digg_count') or 
                     item.get('diggCount') or 
+                    item.get('statistics', {}).get('diggCount') or 
+                    item.get('statistics', {}).get('digg_count') or 
                     0
                 )
                 comment_count = (
-                    stats.get('commentCount') or 
-                    stats.get('comment_count') or 
-                    stats.get('comments') or 
+                    item.get('comment_count') or 
                     item.get('commentCount') or 
+                    item.get('statistics', {}).get('commentCount') or 
+                    item.get('statistics', {}).get('comment_count') or 
                     0
                 )
                 share_count = (
-                    stats.get('shareCount') or 
-                    stats.get('share_count') or 
-                    stats.get('shares') or 
+                    item.get('share_count') or 
+                    item.get('shareCount') or 
+                    item.get('statistics', {}).get('shareCount') or 
+                    item.get('statistics', {}).get('share_count') or 
                     0
                 )
+                
+                # Author info
+                author = item.get('author', {}) or {}
                 subscriber_count = (
-                    author.get('followerCount') or 
                     author.get('follower_count') or 
+                    author.get('followerCount') or 
                     author.get('fans') or 
                     0
                 )
@@ -192,36 +197,39 @@ class TikTokService:
                     continue
                 
                 # Get video ID
+                # Prioritize numeric video_id for embed compatibility
                 video_id = (
+                    item.get('video_id') or 
                     item.get('aweme_id') or 
                     item.get('id') or 
-                    item.get('video_id') or 
                     str(random.randint(100000, 999999))
                 )
                 
-                # Get thumbnail
+                # Get thumbnail - check top level first
                 cover_url = (
-                    video_info.get('cover') or 
-                    video_info.get('dynamicCover') or
-                    video_info.get('originCover') or
+                    item.get('cover') or 
+                    item.get('ai_dynamic_cover') or
+                    item.get('dynamic_cover') or
+                    item.get('origin_cover') or
                     item.get('video', {}).get('cover') or
-                    item.get('covers', {}).get('default') or
+                    item.get('video', {}).get('dynamicCover') or
+                    item.get('video', {}).get('originCover') or
                     'https://placehold.co/480x360?text=TikTok'
                 )
                 
                 # Get description
                 desc = (
+                    item.get('title') or 
                     item.get('desc') or 
                     item.get('description') or 
-                    item.get('title') or 
                     item.get('text') or
                     ''
                 )
                 
                 # Get create time
                 create_time = (
-                    item.get('createTime') or 
                     item.get('create_time') or 
+                    item.get('createTime') or 
                     item.get('createtime') or 
                     0
                 )
@@ -235,9 +243,28 @@ class TikTokService:
                     author.get('nickname') or 
                     author.get('unique_id') or 
                     author.get('uniqueId') or 
-                    item.get('author', {}).get('nickname') or
                     'Unknown'
                 )
+                
+                # Extract hashtags from description if not provided
+                tags = item.get('hashtags', []) or item.get('challenges', []) or []
+                if not tags and desc:
+                    # Extract hashtags from description text
+                    hashtags = re.findall(r'#(\w+)', desc)
+                    tags = hashtags[:5]  # Limit to 5 tags
+                
+                # Estimate follower count if not available
+                # Use engagement rate to estimate: typical TikTok engagement is 5-10%
+                # If we have views and likes, we can estimate
+                if subscriber_count == 0 and view_count > 0:
+                    # Estimate based on engagement (assuming 8% engagement rate)
+                    estimated_followers = int(view_count / 8)  # Conservative estimate
+                    subscriber_count = estimated_followers
+                
+                # Recalculate ratio with estimated or real follower count
+                ratio = 0
+                if subscriber_count > 0:
+                    ratio = (view_count / subscriber_count) * 100
                 
                 video_data = {
                     'id': str(video_id),
@@ -250,7 +277,7 @@ class TikTokService:
                         'medium': {'url': cover_url, 'width': 320, 'height': 180},
                         'high': {'url': cover_url, 'width': 480, 'height': 360}
                     },
-                    'tags': item.get('hashtags', []) or [],
+                    'tags': tags,
                     'statistics': {
                         'viewCount': view_count,
                         'likeCount': like_count,
