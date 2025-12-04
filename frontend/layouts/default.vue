@@ -36,6 +36,7 @@
               <span class="hidden md:inline">Settings</span>
             </NuxtLink>
             <button 
+              v-if="route.path !== '/login'"
               @click="logout" 
               class="activity-item"
             >
@@ -67,5 +68,6 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute()
 const { logout } = useAuth()
 </script>
