@@ -90,7 +90,19 @@ DB_PORT=DB_PORT
 DB_NAME=DB_NAME
 TIKTOK_API_KEY=TIKTOK_API_KEY
 ```
+# db 생성(MariaDB) 
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `hashed_password` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  KEY `username_2` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
+# 최초 사용자 생성
+backend $ ./venv/bin/python create_user.py you_username you_password
 
 ### 프론트엔드 설정
 
@@ -270,9 +282,7 @@ youtube/
 **참고**: TikTok API 키가 설정되지 않은 경우, 앱은 TikTok 검색에 대해 모의 데이터를 표시합니다.
 
 ## 라이선스
-
 MIT
 
 ## 작성자
-
-Nuxt 3와 FastAPI로 제작됨
+LEE SUNG(ALBERT)
