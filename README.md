@@ -37,6 +37,11 @@
 - 상태 표시줄 푸터
 - 부드러운 애니메이션 및 전환 효과
 
+### 🔐 사용자 인증
+- JWT 기반 로그인 시스템
+- 안전한 비밀번호 저장 (bcrypt)
+- 사용자 세션 관리
+
 ![캡처](./youtube_any.png)
 
 
@@ -53,6 +58,9 @@
 - Python 3.8+
 - YouTube Data API v3
 - Pydantic
+- SQLAlchemy (ORM)
+- MariaDB (데이터베이스)
+- JWT (인증)
 
 ## 사전 요구 사항
 
@@ -90,7 +98,7 @@ DB_PORT=DB_PORT
 DB_NAME=DB_NAME
 TIKTOK_API_KEY=TIKTOK_API_KEY
 ```
-# db 생성(MariaDB) 
+### 데이터베이스 설정 (MariaDB) 
 ```bash
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -103,7 +111,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 ```
 
-# 최초 사용자 생성
+### 사용자 계정 생성
 ```bash
 backend $ ./venv/bin/python create_user.py you_username you_password
 ```
@@ -165,7 +173,11 @@ source ~/.zshrc
 
 ## 사용 방법
 
-1. **API 키 설정** (최초 1회)
+1. **로그인**
+   - 앱 실행 시 로그인 페이지가 표시됩니다.
+   - 생성한 계정으로 로그인하세요.
+
+2. **API 키 설정** (최초 1회)
    - 설정(Settings) 페이지로 이동
    - **YouTube**: YouTube Data API v3 키를 입력하고 "Save API Key" 클릭
    - **TikTok**: RapidAPI 키를 입력하고 "Save TikTok API Key" 클릭
@@ -192,6 +204,10 @@ source ~/.zshrc
    - 하단으로 스크롤하여 "Load More"를 클릭하여 페이지네이션
 
 ## API 엔드포인트
+
+### 인증 (Auth)
+- `POST /api/auth/login` - 로그인
+- `POST /api/auth/register` - 회원가입
 
 ### YouTube 비디오
 - `GET /api/videos/search` - YouTube 비디오 검색
