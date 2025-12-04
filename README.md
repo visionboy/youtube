@@ -104,8 +104,9 @@ CREATE TABLE `users` (
 ```
 
 # 최초 사용자 생성
+```bash
 backend $ ./venv/bin/python create_user.py you_username you_password
-
+```
 ### 프론트엔드 설정
 
 ```bash
