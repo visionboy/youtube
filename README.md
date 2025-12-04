@@ -234,8 +234,13 @@ youtube/
 ├── backend/
 │   ├── main.py              # FastAPI 앱
 │   ├── config.py            # 설정
+│   ├── database.py          # 데이터베이스 연결
+│   ├── models.py            # 데이터베이스 모델
+│   ├── auth_utils.py        # 인증 유틸리티
+│   ├── create_user.py       # 사용자 생성 스크립트
 │   ├── requirements.txt     # Python 의존성
 │   ├── routes/
+│   │   ├── auth.py          # 인증 엔드포인트
 │   │   ├── youtube.py       # YouTube 비디오 엔드포인트
 │   │   ├── tiktok.py        # TikTok 비디오 엔드포인트
 │   │   └── settings.py      # 설정 엔드포인트
@@ -258,13 +263,17 @@ youtube/
     │   ├── SearchBar.vue    # 검색 입력창
     │   └── FilterControls.vue  # 필터/정렬 컨트롤
     ├── composables/
+    │   ├── useAuth.ts          # 인증 컴포저블
     │   ├── useYouTubeApi.ts    # YouTube API 컴포저블
     │   ├── useTikTokApi.ts     # TikTok API 컴포저블
     │   └── useSettings.ts      # 설정 컴포저블
     ├── layouts/
     │   └── default.vue      # 기본 레이아웃
+    ├── middleware/
+    │   └── auth.global.ts   # 전역 인증 미들웨어
     └── pages/
         ├── index.vue        # 비디오 페이지
+        ├── login.vue        # 로그인 페이지
         └── settings.vue     # 설정 페이지
 ```
 
